@@ -56,7 +56,55 @@ class Welcome(webapp2.RequestHandler):
         User = self.request.get("Username")
         content = "welcome " + User
         self.response.write(content)
+         def get(self):
+        self.render("index.html")
 
+    def post(self):
+        # Error messages
+        username_error = invalid_email = invalid_password = verify_password_error = None
+
+        user_username = self.request.get("username")
+        user_password = self.request.get("password")
+        user_verify_password = self.request.get("verify")
+        user_email = self.request.get("email")
+
+        username = valid_name(user_username)
+        password = valid_password(user_password)
+        verify_password = None
+        email = None
+
+        if user_email:
+            email = valid_email(user_email)
+            if not email:
+                invalid_email = "That's not a valid email."
+
+        if not username:
+            username_error = "That's not a valid username."
+
+        if password:
+            verify_password = valid_verify_password(user_password, user_verify_password)
+            if not verify_password:
+                verify_password_error = "Your passwords didn't match."
+        else:
+            invalid_password = "That wasn't a valid password."
+
+        if username and password and verify_password and not invalid_email:
+            self.redirect("/welcome?username=%s"%(user_username))
+        else:
+            self.render("index.html",
+            username_error = username_error,
+            username = user_username,
+            invalid_password = invalid_password,
+            verify_password_error = verify_password_error,
+            invalid_email = invalid_email,
+            email = user_email)
+
+class WelcomePage(Handler):
+    def get(self):
+        username = self.request.get("username")
+        self.write("Thanks for signing up %s" % (username))
+        
+        
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.write('Sign Up!')
@@ -64,3 +112,25 @@ class MainHandler(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
 ], debug=True)
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+ 
